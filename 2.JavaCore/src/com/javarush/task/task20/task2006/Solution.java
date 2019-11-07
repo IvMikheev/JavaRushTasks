@@ -5,14 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/* 
-Как сериализовать?
-*/
-
-/* 
-Сделай так, чтобы сериализация класса Human была возможной.
-*/
-
 public class Solution {
     public static class Human implements Serializable {
         public String name;
