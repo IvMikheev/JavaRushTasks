@@ -15,11 +15,24 @@ public class Order {
         dishes = ConsoleHelper.getAllDishesForOrder();
     }
 
+    public int getTotalCookingTime() {
+        return dishes.stream().mapToInt(Dish::getDuration).sum();
+    }
+
+    public boolean isEmpty() {
+        return dishes.size() == 0;
+    }
+
     @Override
     public String toString() {
         if (dishes.size() == 0) {
             return "";
         }
-        return "Your order: " + dishes.toString() + " of " + tablet.toString();
+        return "Your order: " +
+                dishes.toString() +
+                " of " + tablet.toString() +
+                ", cooking time " +
+                getTotalCookingTime() +
+                "min.";
     }
 }
