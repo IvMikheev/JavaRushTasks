@@ -17,6 +17,13 @@ public class Advertisement {
         this.amountPerOneDisplaying = initialAmount / hits;
     }
 
+    public void revalidate() {
+        if (hits < 1) {
+            throw new UnsupportedOperationException();
+        }
+        hits--;
+    }
+
     public String getName() {
         return name;
     }
