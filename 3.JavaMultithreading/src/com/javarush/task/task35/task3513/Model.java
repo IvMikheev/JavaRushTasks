@@ -9,8 +9,8 @@ public class Model {
     private Tile[][] gameTiles;
     int score;
     int maxTile;
-    private Stack previousStates = new Stack();
-    private Stack previousScores = new Stack();
+    private Stack<Tile[][]> previousStates = new Stack<>();
+    private Stack<Integer> previousScores = new Stack<>();
     private boolean isSaveNeeded = true;
 
     public Model() {
@@ -164,8 +164,8 @@ public class Model {
 
     public void rollback() {
         if (!previousStates.empty() & !previousScores.empty()) {
-            score = (int) previousScores.pop();
-            gameTiles = (Tile[][]) previousStates.pop();
+            score = previousScores.pop();
+            gameTiles = previousStates.pop();
         }
     }
 
@@ -183,6 +183,29 @@ public class Model {
                 break;
             case 3:
                 down();
+        }
+    }
+
+    public boolean hasBoardChanged() {
+        Tile[][] previousArr = previousStates.peek();
+        for (int x = 0; x < gameTiles.length; x++) {
+            for (int y = 0; y < gameTiles.length; y++) {
+                if (gameTiles[y][x].value != previousArr[x][y].value) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public MoveEfficiency getMoveEfficiency(Move move) {
+        move.move();
+        if (!hasBoardChanged()) {
+            return new MoveEfficiency(-1, 0, move);
+        } else {
+            MoveEfficiency me = new MoveEfficiency(getEmptyTiles().size(), score, move);
+            rollback();
+            return me;
         }
     }
 }
