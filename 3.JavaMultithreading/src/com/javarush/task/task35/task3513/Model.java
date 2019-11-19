@@ -14,8 +14,6 @@ public class Model {
     }
 
     void resetGameTiles() {
-        score = 0;
-        maxTile = 2;
         gameTiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
         for (int x = 0; x < gameTiles.length; x++) {
             for (int y = 0; y < gameTiles.length; y++) {
