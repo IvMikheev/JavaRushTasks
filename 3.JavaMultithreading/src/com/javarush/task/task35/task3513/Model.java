@@ -52,6 +52,45 @@ public class Model {
         }
     }
 
+    public void up() {
+        for (int i = 0; i < 3; i++) {
+            rotate(gameTiles);
+        }
+        left();
+        rotate(gameTiles);
+    }
+
+    public void right() {
+        for (int i = 0; i < 2; i++) {
+            rotate(gameTiles);
+        }
+        left();
+        for (int i = 0; i < 2; i++) {
+            rotate(gameTiles);
+        }
+    }
+
+    public void down() {
+        rotate(gameTiles);
+        left();
+        for (int i = 0; i < 3; i++) {
+            rotate(gameTiles);
+        }
+    }
+
+    private void rotate(Tile[][] array) {
+        int len = array.length - 1;
+        for (int x = 0; x < array.length / 2; x++) {
+            for (int y = x; y < array.length - x - 1; y++) {
+                Tile temp = array[x][y];
+                array[x][y] = array[len - y][x];
+                array[len - y][x] = array[len - x][len - y];
+                array[len - x][len - y] = array[y][len - x];
+                array[y][len - x] = temp;
+            }
+        }
+    }
+
     private boolean compressTiles(Tile[] tiles) {
         boolean isModified = false;
         for (int i = 0; i < tiles.length; i++) {
