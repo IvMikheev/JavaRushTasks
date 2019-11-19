@@ -1,8 +1,6 @@
 package com.javarush.task.task35.task3513;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class Model {
     private static final int FIELD_WIDTH = 4;
@@ -207,5 +205,14 @@ public class Model {
             rollback();
             return me;
         }
+    }
+
+    public void autoMove() {
+        PriorityQueue<MoveEfficiency> pq = new PriorityQueue<>(4, Comparator.reverseOrder());
+        pq.offer(getMoveEfficiency(this::left));
+        pq.offer(getMoveEfficiency(this::right));
+        pq.offer(getMoveEfficiency(this::up));
+        pq.offer(getMoveEfficiency(this::down));
+        pq.poll().getMove().move();
     }
 }
