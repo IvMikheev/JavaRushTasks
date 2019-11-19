@@ -14,15 +14,16 @@ public class Model {
     }
 
     void resetGameTiles() {
+        score = 0;
+        maxTile = 2;
         gameTiles = new Tile[FIELD_WIDTH][FIELD_WIDTH];
         for (int x = 0; x < gameTiles.length; x++) {
             for (int y = 0; y < gameTiles.length; y++) {
                 gameTiles[x][y] = new Tile();
             }
         }
-        for (int i = 0; i < 2; i++) {
-            addTile();
-        }
+        addTile();
+        addTile();
     }
 
     private void addTile() {
@@ -45,33 +46,44 @@ public class Model {
         return list;
     }
 
-    private void compressTiles(Tile[] tiles) {
+    public void left() {
+        for (Tile[] gameTile : gameTiles) {
+            if (compressTiles(gameTile) & mergeTiles(gameTile)) addTile();
+        }
+    }
+
+    private boolean compressTiles(Tile[] tiles) {
+        boolean isModified = false;
         for (int i = 0; i < tiles.length; i++) {
             if (tiles[i].isEmpty()) {
                 for (int j = i + 1; j < tiles.length; j++) {
                     if (!tiles[j].isEmpty()) {
                         tiles[i].value = tiles[j].value;
                         tiles[j].value = 0;
+                        isModified = true;
                         break;
                     }
                 }
             }
         }
+        return isModified;
     }
 
-    private void mergeTiles(Tile[] tiles) {
-        for (int i = 0; i < tiles.length; i++) {
-            try {
-                if (tiles[i].value == tiles[i + 1].value) {
-                    tiles[i].value *= 2;
-                    tiles[i + 1].value = 0;
-                    score += tiles[i].value;
-                    if (tiles[i].value > maxTile) {
-                        maxTile = tiles[i].value;
-                    }
+    private boolean mergeTiles(Tile[] tiles) {
+        boolean isModified = false;
+        for (int x = 0; x < tiles.length; x++) {
+            int i = x + 1;
+            if (!tiles[x].isEmpty() && i != tiles.length) {
+                if (tiles[x].value == tiles[i].value) {
+                    tiles[x].value *= 2;
+                    tiles[i].value = 0;
+                    isModified = true;
+                    score += tiles[x].value;
+                    if (tiles[x].value > maxTile) maxTile = tiles[x].value;
                 }
-            } catch (ArrayIndexOutOfBoundsException ignored) {}
+            }
         }
         compressTiles(tiles);
+        return isModified;
     }
 }
