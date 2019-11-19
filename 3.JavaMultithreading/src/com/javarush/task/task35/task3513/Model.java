@@ -1,13 +1,18 @@
 package com.javarush.task.task35.task3513;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 public class Model {
     private static final int FIELD_WIDTH = 4;
     private Tile[][] gameTiles;
     int score;
     int maxTile;
+    private Stack previousStates = new Stack();
+    private Stack previousScores = new Stack();
+    private boolean isSaveNeeded = true;
 
     public Model() {
         resetGameTiles();
@@ -138,5 +143,19 @@ public class Model {
         }
         compressTiles(tiles);
         return isModified;
+    }
+
+    private void saveState(Tile[][] tiles) {
+        Tile[][] copy = Arrays.copyOf(tiles, tiles.length);
+        previousScores.push(score);
+        previousStates.push(copy);
+        isSaveNeeded = false;
+    }
+
+    public void rollback() {
+        if (!previousStates.empty() & !previousScores.empty()) {
+            score = (int) previousScores.pop();
+            gameTiles = (Tile[][]) previousStates.pop();
+        }
     }
 }
