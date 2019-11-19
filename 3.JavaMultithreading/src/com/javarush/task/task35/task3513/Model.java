@@ -6,6 +6,8 @@ import java.util.List;
 public class Model {
     private static final int FIELD_WIDTH = 4;
     private Tile[][] gameTiles;
+    int score;
+    int maxTile;
 
     public Model() {
         resetGameTiles();
@@ -41,5 +43,35 @@ public class Model {
             }
         }
         return list;
+    }
+
+    private void compressTiles(Tile[] tiles) {
+        for (int i = 0; i < tiles.length; i++) {
+            if (tiles[i].isEmpty()) {
+                for (int j = i + 1; j < tiles.length; j++) {
+                    if (!tiles[j].isEmpty()) {
+                        tiles[i].value = tiles[j].value;
+                        tiles[j].value = 0;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void mergeTiles(Tile[] tiles) {
+        for (int i = 0; i < tiles.length; i++) {
+            try {
+                if (tiles[i].value == tiles[i + 1].value) {
+                    tiles[i].value *= 2;
+                    tiles[i + 1].value = 0;
+                    score += tiles[i].value;
+                    if (tiles[i].value > maxTile) {
+                        maxTile = tiles[i].value;
+                    }
+                }
+            } catch (ArrayIndexOutOfBoundsException ignored) {}
+        }
+        compressTiles(tiles);
     }
 }
