@@ -50,34 +50,32 @@ public class Model {
 
     public void left() {
         for (Tile[] gameTile : gameTiles) {
-            if (compressTiles(gameTile) & mergeTiles(gameTile)) addTile();
+            if (compressTiles(gameTile) | mergeTiles(gameTile)) addTile();
         }
     }
 
     public void up() {
-        for (int i = 0; i < 3; i++) {
-            rotate(gameTiles);
-        }
+        rotate(gameTiles);
+        rotate(gameTiles);
+        rotate(gameTiles);
         left();
         rotate(gameTiles);
     }
 
     public void right() {
-        for (int i = 0; i < 2; i++) {
-            rotate(gameTiles);
-        }
+        rotate(gameTiles);
+        rotate(gameTiles);
         left();
-        for (int i = 0; i < 2; i++) {
-            rotate(gameTiles);
-        }
+        rotate(gameTiles);
+        rotate(gameTiles);
     }
 
     public void down() {
         rotate(gameTiles);
         left();
-        for (int i = 0; i < 3; i++) {
-            rotate(gameTiles);
-        }
+        rotate(gameTiles);
+        rotate(gameTiles);
+        rotate(gameTiles);
     }
 
     private void rotate(Tile[][] array) {
