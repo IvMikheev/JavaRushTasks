@@ -1,7 +1,6 @@
 package com.javarush.task.task35.task3513;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -54,12 +53,15 @@ public class Model {
     }
 
     public void left() {
+        if (isSaveNeeded) saveState(gameTiles);
         for (Tile[] gameTile : gameTiles) {
             if (compressTiles(gameTile) | mergeTiles(gameTile)) addTile();
         }
+        isSaveNeeded = true;
     }
 
     public void up() {
+        saveState(gameTiles);
         rotate(gameTiles);
         rotate(gameTiles);
         rotate(gameTiles);
@@ -68,6 +70,7 @@ public class Model {
     }
 
     public void right() {
+        saveState(gameTiles);
         rotate(gameTiles);
         rotate(gameTiles);
         left();
@@ -76,6 +79,7 @@ public class Model {
     }
 
     public void down() {
+        saveState(gameTiles);
         rotate(gameTiles);
         left();
         rotate(gameTiles);
@@ -146,9 +150,15 @@ public class Model {
     }
 
     private void saveState(Tile[][] tiles) {
-        Tile[][] copy = Arrays.copyOf(tiles, tiles.length);
-        previousScores.push(score);
-        previousStates.push(copy);
+        Tile[][] gameTilesCopy = new Tile[FIELD_WIDTH][FIELD_WIDTH];
+        for (int x = 0; x < tiles.length; x++) {
+            for (int y = 0; y < tiles.length; y++) {
+                gameTilesCopy[x][y] = new Tile(tiles[x][y].value);
+            }
+        }
+        previousStates.push(gameTilesCopy);
+        int scoreCopy = score;
+        previousScores.push(scoreCopy);
         isSaveNeeded = false;
     }
 
