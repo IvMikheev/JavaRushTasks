@@ -26,6 +26,10 @@ public class Model {
         addTile();
     }
 
+    public Tile[][] getGameTiles() {
+        return gameTiles;
+    }
+
     private void addTile() {
         List<Tile> list = getEmptyTiles();
         if (list.size() != 0) {
@@ -89,6 +93,20 @@ public class Model {
                 array[y][len - x] = temp;
             }
         }
+    }
+
+    public boolean canMove() {
+        for (int x = 0; x < gameTiles.length - 1; x++) {
+            for (int y = 0; y < gameTiles.length - 1; y++) {
+                if (gameTiles[x][y].value == 0) return true;
+                if (gameTiles[x][y].value == gameTiles[x][y + 1].value) {
+                    return true;
+                } else if (gameTiles[x][y].value == gameTiles[x + 1][y].value) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean compressTiles(Tile[] tiles) {
