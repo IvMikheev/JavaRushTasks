@@ -24,7 +24,14 @@ public class Field {
     }
 
     public void print() {
-
+        for (int x = 0; x < height; x++) {
+            for (int y = 0; y < width; y++) {
+                if (matrix[x][y] == 0) {
+                    System.out.print(".");
+                } else System.out.print("X");
+            }
+            System.out.println();
+        }
     }
 
     public void removeFullLines() {
