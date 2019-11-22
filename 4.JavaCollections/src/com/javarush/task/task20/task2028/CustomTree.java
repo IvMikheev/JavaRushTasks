@@ -1,37 +1,33 @@
 package com.javarush.task.task20.task2028;
 
 import java.io.Serializable;
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CustomTree extends AbstractList<String> implements Cloneable, Serializable {
     Entry<String> root;
-    private List<Entry<String>> entries = new ArrayList<>();
+    private List<Entry<String>> tree = new ArrayList<>();
     private List<Integer> generations = new ArrayList<>();
     private int childrenInGeneration;
 
     public CustomTree() {
         root = new Entry<>("root");
-        root.generation = 0;
         generations.add(childrenInGeneration);
-        entries.add(root);
+        tree.add(root);
     }
 
     public String getParent(String s) {
         Entry<String> parent = null;
-        Entry<String> child = entries.stream().filter(v -> v.elementName.equals(s)).findAny().orElse(null);
+        Entry<String> child = tree.stream().filter(v -> v.elementName.equals(s)).findAny().orElse(null);
         if (child != null) {
-            parent = entries.stream().filter(v -> v.equals(child.parent)).findAny().orElse(null);
+            parent = tree.stream().filter(v -> v.equals(child.parent)).findAny().orElse(null);
         }
         return parent != null ? parent.elementName : null;
     }
 
     private Entry<String> getParent(Entry<String> child) {
         int parentGen = child.generation - 1;
-        List<Entry<String>> parents = entries.stream().filter(v -> v.generation == parentGen).collect(Collectors.toList());
+        List<Entry<String>> parents = tree.stream().filter(v -> v.generation == parentGen).collect(Collectors.toList());
         for (Entry<String> p : parents) {
             if (p.leftChild == null) {
                 p.leftChild = child;
@@ -44,30 +40,63 @@ public class CustomTree extends AbstractList<String> implements Cloneable, Seria
         return null;
     }
 
-    public void checkAndIncreaseGeneration() {
-        if (generations.size() == 1) {
-            generations.add(childrenInGeneration = 2);
-        } else if (childrenInGeneration == 0) {
-            childrenInGeneration = generations.get(generations.size() - 1);
-            childrenInGeneration *= 2;
+    private void checkChildrenInGeneration() {
+        if (childrenInGeneration == 0) {
+            childrenInGeneration = getChildrenInGeneration();
             generations.add(childrenInGeneration);
         }
     }
 
     @Override
     public boolean add(String s) {
-        checkAndIncreaseGeneration();
-        Entry<String> entry = new Entry<>(s);
-        entries.add(entry);
-        entry.generation = generations.size() - 1;
-        entry.parent = getParent(entry);
+        checkChildrenInGeneration();
+        Entry<String> child = new Entry<>(s);
+        tree.add(child);
+        child.generation = generations.size() - 1;
+        child.parent = getParent(child);
         childrenInGeneration--;
         return true;
     }
 
     @Override
+    public boolean remove(Object o) {
+        String name;
+        if (o instanceof String) {
+            name = (String) o;
+        } else throw new UnsupportedOperationException();
+
+        Entry<String> entry = tree.stream().filter(e -> e.elementName.equals(name)).findFirst().orElse(null);
+        if (entry != null) {
+            removeChildren(entry);
+            entry.parent.leftChild = null;
+            entry.parent.rightChild = null;
+            tree.remove(entry);
+            int max = getMaxAvailableGeneration();
+            while (max + 1 < generations.size() - 1) {
+                generations.remove(generations.size() - 1);
+            }
+            childrenInGeneration = getChildrenInGeneration();
+            return true;
+        } else return false;
+    }
+
+    private void removeChildren(Entry<String> current) {
+        if (current.leftChild != null) removeChildren(current.leftChild);
+        if (current.rightChild != null) removeChildren(current.rightChild);
+        tree.remove(current);
+    }
+
+    private int getMaxAvailableGeneration() {
+        return tree.stream().mapToInt(v -> v.generation).max().getAsInt();
+    }
+
+    private int getChildrenInGeneration() {
+        return (int) tree.stream().filter(v -> v.generation == getMaxAvailableGeneration()).count() * 2;
+    }
+
+    @Override
     public int size() {
-        return entries.size() - 1;
+        return tree.size() - 1;
     }
 
     @Override
@@ -107,18 +136,11 @@ public class CustomTree extends AbstractList<String> implements Cloneable, Seria
 
     static class Entry<T> implements Serializable {
         String elementName;
-        boolean availableToAddLeftChildren, availableToAddRightChildren;
         Entry<T> parent, leftChild, rightChild;
         private int generation;
 
         public Entry(String elementName) {
             this.elementName = elementName;
-            availableToAddLeftChildren = true;
-            availableToAddRightChildren = true;
-        }
-
-        public boolean isAvailableToAddChildren() {
-            return availableToAddLeftChildren || availableToAddRightChildren;
         }
     }
 }
