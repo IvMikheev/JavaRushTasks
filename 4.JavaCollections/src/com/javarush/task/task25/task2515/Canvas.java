@@ -29,6 +29,7 @@ public class Canvas {
     public void setPoint(double x, double y, char c) {
         int xRounded = (int) Math.round(x);
         int yRounded = (int) Math.round(y);
+
         if (xRounded >= 0 && xRounded < matrix[0].length && yRounded >= 0 && yRounded < matrix.length) {
             matrix[yRounded][xRounded] = c;
         }
