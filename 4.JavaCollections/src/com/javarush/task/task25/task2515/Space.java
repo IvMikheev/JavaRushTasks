@@ -17,7 +17,7 @@ public class Space {
     }
 
     public static void main(String[] args) {
-
+        new Canvas(5, 5).print();
     }
 
     public void run() {
