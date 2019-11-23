@@ -19,20 +19,15 @@ public class KeyboardObserver extends Thread {
         frame = new JFrame("KeyPress Tester");
         frame.setTitle("Transparent JFrame Demo");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         frame.setUndecorated(true);
         frame.setSize(400, 400);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLayout(new GridBagLayout());
-
         frame.setOpacity(0.0f);
         frame.setVisible(true);
-
         frame.addFocusListener(new FocusListener() {
             @Override
-            public void focusGained(FocusEvent e) {
-                //do nothing
-            }
+            public void focusGained(FocusEvent e) {}
 
             @Override
             public void focusLost(FocusEvent e) {
@@ -40,23 +35,17 @@ public class KeyboardObserver extends Thread {
             }
         });
 
-
         frame.addKeyListener(new KeyListener() {
 
-            public void keyTyped(KeyEvent e) {
+            public void keyTyped(KeyEvent e) {}
 
-            }
-
-            public void keyReleased(KeyEvent e) {
-
-            }
+            public void keyReleased(KeyEvent e) {}
 
             public void keyPressed(KeyEvent e) {
                 keyEvents.add(e);
             }
         });
     }
-
 
     public boolean hasKeyEvents() {
         return !keyEvents.isEmpty();
