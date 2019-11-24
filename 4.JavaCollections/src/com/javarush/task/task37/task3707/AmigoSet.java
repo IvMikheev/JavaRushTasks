@@ -70,6 +70,7 @@ public class AmigoSet<E> extends AbstractSet implements Cloneable, Serializable,
         os.writeObject(size);
         os.writeObject(loadFactor);
         os.writeObject(capacity);
+
         for (E e : map.keySet()) {
             os.writeObject(e);
         }
@@ -81,6 +82,7 @@ public class AmigoSet<E> extends AbstractSet implements Cloneable, Serializable,
         float loadFactor = (float) is.readObject();
         int capacity = (int) is.readObject();
         map = new HashMap<>(capacity, loadFactor);
+
         for (int i = 0; i < size; i++) {
             map.put((E) is.readObject(), PRESENT);
         }

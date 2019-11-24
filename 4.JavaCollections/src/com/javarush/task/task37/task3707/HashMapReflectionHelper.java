@@ -10,8 +10,7 @@ public class HashMapReflectionHelper {
             Method method = map.getClass().getDeclaredMethod(methodName);
             method.setAccessible(true);
             return (T) method.invoke(map);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {
-        }
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {}
         return null;
     }
 }
