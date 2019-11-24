@@ -8,4 +8,5 @@ public class Man implements Human {
     public String toString() {
         return "Man{}";
     }
+
 }
