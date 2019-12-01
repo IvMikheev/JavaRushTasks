@@ -100,7 +100,7 @@ public class OurHashMapStorageStrategy implements StorageStrategy {
 
     @Override
     public Long getKey(String value) {
-        for (int i = 1; i < table.length; i++) {
+        for (int i = 0; i < table.length; i++) {
             if (table[i] != null) {
                 if (table[i].getValue().equals(value)) return table[i].getKey();
             }
@@ -110,7 +110,7 @@ public class OurHashMapStorageStrategy implements StorageStrategy {
 
     @Override
     public String getValue(Long key) {
-        for (int i = 1; i < table.length; i++) {
+        for (int i = 0; i < table.length; i++) {
             if (table[i] != null) {
                 if (table[i].getKey().equals(key)) return table[i].getValue();
             }
