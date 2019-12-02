@@ -20,9 +20,7 @@ public class Entry implements Serializable {
     public String getValue() { return value; }
     public String toString() { return key + "=" + value; }
 
-    public int hashCode() {
-        return Objects.hashCode(key) ^ Objects.hashCode(value);
-    }
+    public int hashCode()    { return Objects.hashCode(key) ^ Objects.hashCode(value); }
 
     public boolean equals(Object o) {
         if (this == o) return true;

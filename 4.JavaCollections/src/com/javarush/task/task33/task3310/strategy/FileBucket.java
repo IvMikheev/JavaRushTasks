@@ -20,7 +20,7 @@ public class FileBucket {
     public long getFileSize() {
         try {
             return Files.size(path);
-        } catch (IOException ignored) {
+        } catch (IOException e) {
             return 0;
         }
     }

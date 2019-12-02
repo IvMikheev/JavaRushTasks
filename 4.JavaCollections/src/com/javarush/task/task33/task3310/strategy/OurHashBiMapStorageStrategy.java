@@ -7,14 +7,10 @@ public class OurHashBiMapStorageStrategy implements StorageStrategy {
     HashMap<String, Long> v2k = new HashMap<>();
 
     @Override
-    public boolean containsKey(Long key) {
-        return k2v.containsKey(key);
-    }
+    public boolean containsKey(Long key)       { return k2v.containsKey(key); }
 
     @Override
-    public boolean containsValue(String value) {
-        return v2k.containsKey(value);
-    }
+    public boolean containsValue(String value) { return v2k.containsKey(value); }
 
     @Override
     public void put(Long key, String value) {
@@ -23,12 +19,8 @@ public class OurHashBiMapStorageStrategy implements StorageStrategy {
     }
 
     @Override
-    public Long getKey(String value) {
-        return v2k.get(value);
-    }
+    public Long getKey(String value)           { return v2k.get(value); }
 
     @Override
-    public String getValue(Long key) {
-        return k2v.get(key);
-    }
+    public String getValue(Long key)           { return k2v.get(key); }
 }

@@ -41,7 +41,7 @@ public class OurHashMapStorageStrategy implements StorageStrategy {
         Entry[] newTable = new Entry[newCapacity];
         transfer(newTable);
         table = newTable;
-        threshold = (int)(newCapacity * loadFactor);
+        threshold = (int) (newCapacity * loadFactor);
     }
 
     void transfer(Entry[] newTable) {
@@ -65,8 +65,9 @@ public class OurHashMapStorageStrategy implements StorageStrategy {
     void addEntry(int hash, Long key, String value, int bucketIndex) {
         Entry e = table[bucketIndex];
         table[bucketIndex] = new Entry(hash, key, value, e);
-        if (size++ >= threshold)
+        if (size++ >= threshold) {
             resize(2 * table.length);
+        }
     }
 
     void createEntry(int hash, Long key, String value, int bucketIndex) {
@@ -82,14 +83,14 @@ public class OurHashMapStorageStrategy implements StorageStrategy {
 
     @Override
     public boolean containsValue(String value) {
-        if (value == null)
-            return false;
+        if (value == null) return false;
 
-        Entry[] tab = table;
-        for (int i = 0; i < tab.length ; i++)
-            for (Entry e = tab[i] ; e != null ; e = e.next)
-                if (value.equals(e.value))
-                    return true;
+        for (Entry entry : table) {
+            for (Entry e = entry; e != null; e = e.next) {
+                if (value.equals(e.value)) return true;
+            }
+        }
+
         return false;
     }
 
@@ -100,21 +101,23 @@ public class OurHashMapStorageStrategy implements StorageStrategy {
 
     @Override
     public Long getKey(String value) {
-        for (int i = 0; i < table.length; i++) {
-            if (table[i] != null) {
-                if (table[i].getValue().equals(value)) return table[i].getKey();
+        for (Entry entry : table) {
+            for (Entry e = entry; e != null; e = e.next) {
+                if (value.equals(e.value)) return e.getKey();
             }
         }
+
         return null;
     }
 
     @Override
     public String getValue(Long key) {
-        for (int i = 0; i < table.length; i++) {
-            if (table[i] != null) {
-                if (table[i].getKey().equals(key)) return table[i].getValue();
+        for (Entry entry : table) {
+            for (Entry e = entry; e != null; e = e.next) {
+                if (key.equals(e.key)) return e.getValue();
             }
         }
+
         return null;
     }
 }

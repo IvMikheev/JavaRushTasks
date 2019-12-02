@@ -4,9 +4,7 @@ public class FileStorageStrategy implements StorageStrategy {
     static final int DEFAULT_INITIAL_CAPACITY = 16;
     static final long DEFAULT_BUCKET_SIZE_LIMIT = 10000L;
     FileBucket[] table = new FileBucket[DEFAULT_INITIAL_CAPACITY];
-    int size;
     private long bucketSizeLimit = DEFAULT_BUCKET_SIZE_LIMIT;
-    long maxBucketSize;
 
     int hash(Long k) {
         k ^= (k >>> 20) ^ (k >>> 12);
@@ -19,16 +17,14 @@ public class FileStorageStrategy implements StorageStrategy {
 
     Entry getFileBucket(Long key) {
         int hash = (key == null) ? 0 : hash(key);
-        try {
-            Entry e = table[indexFor(hash, table.length)].getEntry();
-            for (; e != null; e = e.next) {
+        if (table[indexFor(hash, table.length)] != null) {
+            for (Entry e = table[indexFor(hash, table.length)].getEntry();
+                 e != null; e = e.next) {
                 Object k;
                 if (e.hash == hash &&
                         ((k = e.key) == key || (key != null && key.equals(k))))
                     return e;
             }
-        } catch (NullPointerException ex) {
-            return null;
         }
         return null;
     }
@@ -45,45 +41,46 @@ public class FileStorageStrategy implements StorageStrategy {
     void transfer(FileBucket[] newTable) {
         FileBucket[] src = table;
         int newCapacity = newTable.length;
-        for (int j = 0; j < src.length; j++) {
-            if (src[j] != null) {
-                Entry e = src[j].getEntry();
+        for (FileBucket fileBucket : src) {
+            if (fileBucket != null) {
+                Entry e = fileBucket.getEntry();
                 if (e != null) {
-                    do {
-                        Entry next = e.next;
+                    for (Entry next = e.next; e != null; e = e.next) {
                         int i = indexFor(e.hash, newCapacity);
-                        if (newTable[i] == null) newTable[i] = new FileBucket();
+                        if (newTable[i] == null) {
+                            newTable[i] = new FileBucket();
+                        }
                         e.next = newTable[i].getEntry();
                         newTable[i].putEntry(e);
                         e = next;
-                    } while (e != null);
+                    }
                 }
             }
         }
     }
 
     void addFileBucket(int hash, Long key, String value, int bucketIndex) {
-        try {
-            Entry e = table[bucketIndex].getEntry();
-            table[bucketIndex].putEntry(new Entry(hash, key, value, e));
-        } catch (NullPointerException ignored) {
+        if (table[bucketIndex] == null) {
             table[bucketIndex] = new FileBucket();
             table[bucketIndex].putEntry(new Entry(hash, key, value, null));
+        } else {
+            Entry e = table[bucketIndex].getEntry();
+            table[bucketIndex].putEntry(new Entry(hash, key, value, e));
         }
-        size = (int) table[bucketIndex].getFileSize();
-        if (size >= bucketSizeLimit)
+
+        if (table[bucketIndex].getFileSize() >= bucketSizeLimit) {
             resize(2 * table.length);
+        }
     }
 
     void createFileBucket(int hash, Long key, String value, int bucketIndex) {
-        try {
-            Entry e = table[bucketIndex].getEntry();
-            table[bucketIndex].putEntry(new Entry(hash, key, value, e));
-        } catch (NullPointerException ex) {
+        if (table[bucketIndex] == null) {
             table[bucketIndex] = new FileBucket();
             table[bucketIndex].putEntry(new Entry(hash, key, value, null));
+        } else {
+            Entry e = table[bucketIndex].getEntry();
+            table[bucketIndex].putEntry(new Entry(hash, key, value, e));
         }
-        //size++;
     }
 
     @Override
@@ -93,19 +90,16 @@ public class FileStorageStrategy implements StorageStrategy {
 
     @Override
     public boolean containsValue(String value) {
-        if (value == null)
-            return false;
+        if (value == null) return false;
 
-        FileBucket[] tab = table;
-        for (int i = 0; i < tab.length; i++) {
-            try {
-                for (Entry e = tab[i].getEntry(); e != null; e = e.next) {
+        for (FileBucket fileBucket : table) {
+            if (fileBucket != null) {
+                for (Entry e = fileBucket.getEntry(); e != null; e = e.next) {
                     if (value.equals(e.value)) return true;
                 }
-            } catch (NullPointerException ex) {
-                return false;
-            }
+            } else return false;
         }
+
         return false;
     }
 
@@ -116,10 +110,9 @@ public class FileStorageStrategy implements StorageStrategy {
 
     @Override
     public Long getKey(String value) {
-        for (int i = 0; i < table.length; i++) {
-            if (table[i] != null) {
-                Entry e = table[i].getEntry();
-                for (; e != null; e = e.next) {
+        for (FileBucket fileBucket : table) {
+            if (fileBucket != null) {
+                for (Entry e = fileBucket.getEntry(); e != null; e = e.next) {
                     if (e.getValue().equals(value)) return e.getKey();
                 }
             }
@@ -129,10 +122,9 @@ public class FileStorageStrategy implements StorageStrategy {
 
     @Override
     public String getValue(Long key) {
-        for (int i = 0; i < table.length; i++) {
-            if (table[i] != null) {
-                Entry e = table[i].getEntry();
-                for (; e != null; e = e.next) {
+        for (FileBucket fileBucket : table) {
+            if (fileBucket != null) {
+                for (Entry e = fileBucket.getEntry(); e != null; e = e.next) {
                     if (e.getKey().equals(key)) return e.getValue();
                 }
             }

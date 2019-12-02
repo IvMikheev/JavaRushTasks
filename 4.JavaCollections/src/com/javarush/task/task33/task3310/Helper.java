@@ -10,7 +10,5 @@ public class Helper {
         return new BigInteger(130, random).toString(36);
     }
 
-    public static void printMessage(String message) {
-        System.out.println(message);
-    }
+    public static void printMessage(String message) { System.out.println(message); }
 }

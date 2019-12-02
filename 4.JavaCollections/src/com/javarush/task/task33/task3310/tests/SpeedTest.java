@@ -17,6 +17,7 @@ public class SpeedTest {
         for (String string : strings) {
             ids.add(shortener.getId(string));
         }
+
         return System.currentTimeMillis() - startMs;
     }
 
@@ -25,6 +26,7 @@ public class SpeedTest {
         for (Long id : ids) {
             strings.add(shortener.getString(id));
         }
+
         return System.currentTimeMillis() - startMs;
     }
 

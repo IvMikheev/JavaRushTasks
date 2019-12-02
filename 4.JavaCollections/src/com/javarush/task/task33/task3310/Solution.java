@@ -41,6 +41,7 @@ public class Solution {
         }
 
         Shortener shortener = new Shortener(strategy);
+
         long startMs = new Date().getTime();
         Set<Long> ids = getIds(shortener, randomStrings);
         long resultMs = new Date().getTime() - startMs;

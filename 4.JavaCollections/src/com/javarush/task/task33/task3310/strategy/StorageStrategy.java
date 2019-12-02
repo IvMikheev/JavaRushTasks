@@ -11,4 +11,5 @@ public interface StorageStrategy {
     Long getKey(String value);
 
     String getValue(Long key);
+
 }

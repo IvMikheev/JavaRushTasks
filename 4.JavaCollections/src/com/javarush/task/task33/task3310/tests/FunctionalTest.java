@@ -18,7 +18,6 @@ public class FunctionalTest {
 
         Assert.assertNotEquals(str1, id2, id1);
         Assert.assertNotEquals(str3, id2, id3);
-
         Assert.assertEquals(id1, id3);
 
         String string1 = shortener.getString(id1);
